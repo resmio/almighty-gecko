@@ -1,6 +1,5 @@
 from datetime import date, timedelta
 
-import pandas as pd
 from flask import Flask
 from flask_geckoboard import Geckoboard
 
@@ -13,8 +12,9 @@ geckoboard = Geckoboard(app)
 @app.route('/number_facilities')
 @geckoboard.number
 def number_facilities():
-    fname = run_query('facilities')
-    facilities = pd.read_csv(fname)
+    facilities = run_query('facilities')
+    facilities['date_created'] = map(lambda d: d.date(),
+                                     facilities.created)
     last_month = facilities[
         facilities.date_created < (
             date.today() - timedelta(days=30))].id.count()
