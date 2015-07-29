@@ -1,3 +1,5 @@
 Flask==0.10.1
 Flask-Geckoboard==0.2.1
 gunicorn==19.3.0
+pandas==0.16.2
+psycopg2==2.6.1
