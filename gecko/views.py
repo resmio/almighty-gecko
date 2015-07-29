@@ -33,7 +33,7 @@ def number_bookings():
 
 
 @app.route('/active_facilities')
-@geckoboard.line_chart
+@geckoboard.new_line_chart
 def active_facilities():
     bookings = run_query('active_facilities')
     bookings.created = bookings.created.apply(lambda d: d.date())
