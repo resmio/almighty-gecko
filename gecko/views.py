@@ -29,3 +29,23 @@ def number_bookings():
         bookings.created < (date.today() - timedelta(days=30))].created.count()
     this_month = bookings.created.count()
     return (this_month, last_month)
+
+
+@app.route('/active_facilities')
+@geckoboard.line_chart
+def active_facilities():
+    bookings = run_query('active_facilities')
+    bookings.created = bookings.created.apply(lambda d: d.date())
+    current_date = date.today()
+    end_date = date(day=1, month=1, year=2015)
+    delta = timedelta(days=7)
+    actives = []
+    dates = []
+    while current_date >= end_date:
+        dates.append('{}'.format(current_date))
+        actives.append(len(bookings[
+            (bookings.created <= current_date) &
+            (bookings.created >
+             (current_date - timedelta(days=30)))].facility_id.unique()))
+        current_date -= delta
+    return (actives, dates, '# Facilities',)

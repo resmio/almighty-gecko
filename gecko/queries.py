@@ -16,4 +16,13 @@ QUERIES = {
         WHERE f.verified IS TRUE
 
     """,
+
+    'active_facilities':
+
+    """
+        SELECT b.created, f.id AS facility_id FROM bookoya_booking b
+        JOIN bookoya_facility f ON f.id = b.facility_id
+        WHERE f.verified IS TRUE
+
+    """,
 }
