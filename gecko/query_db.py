@@ -1,5 +1,5 @@
+import pandas as pd
 import psycopg2
-from tempfile import NamedTemporaryFile
 import urlparse
 
 from config import get_config
@@ -19,12 +19,4 @@ conn = psycopg2.connect(
 def run_query(query_name):
     query_key = query_name
     query = QUERIES[query_key]
-    cur = conn.cursor()
-    output = 'COPY ({}) TO STDOUT WITH CSV HEADER'.format(query)
-    f = NamedTemporaryFile(delete=False)
-    cur.copy_expert(output, f)
-    conn.close()
-    f.close()
-    return f.name
-
-
+    return pd.read_sql_query(query, conn)
