@@ -1,5 +1,5 @@
 Flask==0.10.1
--e git+https://github.com/neocortex/flask-geckoboard.git@184670af3ff9b859808bcf19e894b4ea331901f8#egg=flask-geckoboard
+-e git+https://github.com/neocortex/flask-geckoboard.git@ab760faabd4a2455643e847a8a820fd3be71be9e#egg=flask-geckoboard
 gunicorn==19.3.0
 pandas==0.16.2
 psycopg2==2.6.1
