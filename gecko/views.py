@@ -48,4 +48,5 @@ def active_facilities():
             (bookings.created >
              (current_date - timedelta(days=30)))].facility_id.unique()))
         current_date -= delta
-    return (actives, dates, '# Facilities',)
+    dates = dates[::5]
+    return (actives[::-1], dates[::-1], '# Facilities',)
