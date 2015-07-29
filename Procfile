@@ -1,1 +1,1 @@
-web: gunicorn geckoapp.views:app --log-file=-
+web: gunicorn gecko.views:app --log-file=-
