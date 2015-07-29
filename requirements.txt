@@ -1,0 +1,3 @@
+Flask==0.10.1
+Flask-Geckoboard==0.2.1
+gunicorn==19.3.0
