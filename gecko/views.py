@@ -2,6 +2,7 @@ from datetime import date, timedelta
 
 from flask import Flask
 from flask_geckoboard import Geckoboard
+import numpy as np
 
 from query_db import run_query
 
@@ -48,5 +49,6 @@ def active_facilities():
             (bookings.created >
              (current_date - timedelta(days=30)))].facility_id.unique()))
         current_date -= delta
-    dates = dates[::5]
-    return (actives[::-1], dates[::-1], '# Facilities',)
+    xaxis = dates[::5]
+    yaxis = list(np.linspace(min(actives), max(actives), 10))
+    return (actives[::-1], xaxis[::-1], yaxis)
