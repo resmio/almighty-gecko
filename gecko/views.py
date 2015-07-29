@@ -50,5 +50,5 @@ def active_facilities():
              (current_date - timedelta(days=30)))].facility_id.unique()))
         current_date -= delta
     xaxis = dates[::5]
-    yaxis = list(np.linspace(min(actives), max(actives), 10))
+    yaxis = list(np.linspace(min(actives), max(actives), 10).astype(int))
     return (actives[::-1], xaxis[::-1], yaxis)
