@@ -40,6 +40,7 @@ def active_facilities():
     end_date = date(day=1, month=1, year=2015)
     delta = timedelta(days=7)
     actives = []
+    verifieds = []
     dates = []
     while current_date >= end_date:
         dates.append('{}'.format(current_date))
@@ -47,6 +48,8 @@ def active_facilities():
             (bookings.created <= current_date) &
             (bookings.created >
              (current_date - timedelta(days=30)))].facility_id.unique()))
+        verifieds.append(len(bookings[bookings.created <= current_date]))
         current_date -= delta
-    return {'series': [{'data': actives[::-1], 'name': 'Active'}],
+    return {'series': [{'data': actives[::-1], 'name': 'Active'},
+                       {'data': verifieds[::-1], 'name': 'Verified'}],
             'x_axis': {'labels': dates[::-1], 'type': 'datetime'}}
