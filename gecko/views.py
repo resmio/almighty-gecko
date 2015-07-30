@@ -32,7 +32,7 @@ def number_bookings():
 
 
 @app.route('/active_facilities')
-@geckoboard.new_line_chart
+@geckoboard.line_chart
 def active_facilities():
     bookings = run_query('active_facilities')
     bookings.created = bookings.created.apply(lambda d: d.date())
@@ -48,5 +48,5 @@ def active_facilities():
             (bookings.created >
              (current_date - timedelta(days=30)))].facility_id.unique()))
         current_date -= delta
-    return {'series': actives[::-1], 'x_axis': dates[::-1],
-            'x_type': 'datetime'}
+    return {'series': [{'data': actives[::-1], 'name': 'Active'}],
+            'x_axis': {'labels': dates[::-1], 'type': 'datetime'}}
