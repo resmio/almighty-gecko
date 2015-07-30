@@ -2,7 +2,6 @@ from datetime import date, timedelta
 
 from flask import Flask
 from flask_geckoboard import Geckoboard
-import numpy as np
 
 from query_db import run_query
 
