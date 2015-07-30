@@ -49,4 +49,5 @@ def active_facilities():
             (bookings.created >
              (current_date - timedelta(days=30)))].facility_id.unique()))
         current_date -= delta
-    return (actives[::-1], dates[::-1])
+    return {'series': actives[::-1], 'x_axis': dates[::-1],
+            'x_type': 'datetime'}
