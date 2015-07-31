@@ -34,8 +34,10 @@ def number_bookings():
 @app.route('/active_facilities')
 @geckoboard.line_chart
 def active_facilities():
-    bookings = run_query('active_facilities')
+    df = run_query('active_facilities')
+    bookings = df[df.created.notnull()]
     bookings.created = bookings.created.apply(lambda d: d.date())
+    df.f_created = df.f_created.apply(lambda d: d.date())
     current_date = date.today()
     end_date = date(day=1, month=1, year=2015)
     delta = timedelta(days=7)
@@ -48,7 +50,8 @@ def active_facilities():
             (bookings.created <= current_date) &
             (bookings.created >
              (current_date - timedelta(days=30)))].facility_id.unique()))
-        verifieds.append(len(bookings[bookings.created <= current_date]))
+        verifieds.append(
+            len(df[df.f_created <= current_date].facility_id.unique()))
         current_date -= delta
     return {'series': [{'data': actives[::-1], 'name': 'Active'},
                        {'data': verifieds[::-1], 'name': 'Verified'}],
