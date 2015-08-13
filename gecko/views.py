@@ -123,6 +123,6 @@ def current_active_numbers():
     deactivated = len(last_month.difference(this_month))
     reactivated = len(before.difference(
         last_month).intersection(this_month))
-    return ((activated, "Activated"),
+    return ((deactivated, "De-activated"),
             (reactivated, "Re-activated"),
-            (deactivated, "De-activated"))
+            (activated, "Activated"))
