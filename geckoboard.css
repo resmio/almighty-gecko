@@ -1,0 +1,27 @@
+.widget .widget-inner > header {
+  	background-color: #44BDA4;
+}
+
+.widget.selected .widget-inner > header {
+  background-color: #44BDA4;
+}
+
+.widget .widget-inner > header h1 {
+  color: #ffffff;
+}
+
+#widget-16039504 {
+    width: 50%;
+}
+
+#widget-16039553 {
+    text-align: center;
+    margin: 0 auto;
+    width: 50% !important;
+}
+
+body, #dashboard-wrapper {
+    background-image: url('https://s3.amazonaws.com/resmio-logo/web/resmio_logo_color_300x101.png');
+    background-repeat: no-repeat;
+    background-position: 50% 3%;
+}
