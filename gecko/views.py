@@ -31,10 +31,10 @@ def number_bookings():
     return (this_month, last_month)
 
 
-@app.route('/active_facilities')
+@app.route('/active_verified_facilities')
 @geckoboard.line_chart
-def active_facilities():
-    df = run_query('active_facilities')
+def active_verified_facilities():
+    df = run_query('active_verified_facilities')
     bookings = df[df.created.notnull()]
     bookings.created = bookings.created.apply(lambda d: d.date())
     df.f_created = df.f_created.apply(lambda d: d.date())

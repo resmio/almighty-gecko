@@ -17,7 +17,7 @@ QUERIES = {
 
     """,
 
-    'active_facilities':
+    'active_verified_facilities':
 
     """
         SELECT b.created, f.id AS facility_id, f.created AS f_created
