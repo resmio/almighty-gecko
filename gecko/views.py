@@ -64,7 +64,6 @@ def new_lost_active_facilities():
     df = run_query('active_verified_facilities')
     bookings = df[df.created.notnull()]
     bookings.created = bookings.created.apply(lambda d: d.date())
-    df.f_created = df.f_created.apply(lambda d: d.date())
     today = date.today().toordinal()
     # Get the last sunday
     current_date = date.fromordinal(today - (today % 7))
@@ -97,3 +96,33 @@ def new_lost_active_facilities():
                        {'data': deactive[::-1], 'name': 'De-activated'},
                        {'data': reactive[::-1], 'name': 'Re-activated'}],
             'x_axis': {'labels': dates[::-1], 'type': 'datetime'}}
+
+
+@app.route('/current_active_numbers')
+@geckoboard.rag
+def current_active_numbers():
+    df = run_query('active_verified_facilities')
+    bookings = df[df.created.notnull()]
+    bookings.created = bookings.created.apply(lambda d: d.date())
+    today = date.today().toordinal()
+    # Get the last sunday
+    current_date = date.fromordinal(today - (today % 7))
+    this_month = set(bookings[
+        (bookings.created <= current_date) &
+        (bookings.created >= (current_date - timedelta(days=30)))]
+        .facility_id.unique())
+    last_month = set(bookings[
+        (bookings.created >= (current_date - timedelta(days=60))) &
+        (bookings.created < (current_date - timedelta(days=30)))]
+        .facility_id.unique())
+    before = set(bookings[
+        bookings.created <= (current_date - timedelta(days=60))]
+        .facility_id.unique())
+    activated = len(this_month.difference(
+        last_month.union(before)))
+    deactivated = len(last_month.difference(this_month))
+    reactivated = len(before.difference(
+        last_month).intersection(this_month))
+    return ((activated, "Activated"),
+            (reactivated, "Re-activated"),
+            (deactivated, "De-activated"))
