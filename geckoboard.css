@@ -15,7 +15,7 @@
   width: 50%;
 }
 
-#widget-16039553, #widget-16041022 {
+#widget-16039553, #widget-16041022, #widget-16041401, #widget-16041633 {
   margin: 0 auto;
   text-align: center;
   width: 75% !important;
@@ -25,4 +25,9 @@ body, #dashboard-wrapper {
   background-image: url('https://s3.amazonaws.com/resmio-logo/web/resmio_logo_color_300x101.png');
   background-position: 50% 3%;
   background-repeat: no-repeat;
+}
+
+
+.widget-size-full-width .slides li {
+    color: #F7BE57;
 }
