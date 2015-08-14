@@ -171,8 +171,7 @@ def least_active_paying():
 def number_bookings():
     bookings = run_query('bookings')
     bookings = bookings.set_index('created')
-    start = bookings.index.searchsorted(datetime(2015, 1, 1))
-    bookings = bookings.ix[start:]
+    bookings = bookings.loc['20150101':]
     bookings_count = bookings.facility_id.resample('w', how='count')
     bookings_count.index = map(lambda d: d.date(), bookings_count.index)
     dates = ['{}'.format(d) for d in bookings_count.index]
