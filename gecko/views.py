@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 
 from flask import Flask
 from flask_geckoboard import Geckoboard
@@ -177,4 +177,18 @@ def number_bookings():
     dates = ['{}'.format(d) for d in bookings_count.index]
     return {'series': [{'data': bookings_count.values.tolist(),
                         'name': 'Bookings'}],
+            'x_axis': {'labels': dates, 'type': 'datetime'}}
+
+
+@app.route('/number_covers')
+@geckoboard.line_chart
+def number_covers():
+    bookings = run_query('bookings')
+    bookings = bookings.set_index('created')
+    bookings = bookings.loc['20150101':]
+    bookings_count = bookings.num.resample('w', how='sum')
+    bookings_count.index = map(lambda d: d.date(), bookings_count.index)
+    dates = ['{}'.format(d) for d in bookings_count.index]
+    return {'series': [{'data': bookings_count.values.tolist(),
+                        'name': 'Covers'}],
             'x_axis': {'labels': dates, 'type': 'datetime'}}
