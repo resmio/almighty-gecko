@@ -129,6 +129,6 @@ def most_active_free_plan():
         (bookings.created >=
          (current_date - timedelta(days=30)))].facility_id.value_counts(
              ascending=False)
-    previous_ranks = [int(np.where(values_last_week.index == f)[0])
+    previous_ranks = [int(np.where(values_last_week.index == f)[0] + 1)
                       for f in top20_this_week.index]
     return (top20_this_week.index, top20_this_week.values, previous_ranks)
