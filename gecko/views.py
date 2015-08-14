@@ -129,3 +129,38 @@ def most_active_free_plan():
     previous_ranks = [int(np.where(values_last_week.index == f)[0] + 1)
                       for f in top20_this_week.index]
     return (top20_this_week.index, top20_this_week.values, previous_ranks)
+
+
+@app.route('/least_active_paying')
+@geckoboard.leaderboard
+def least_active_paying():
+    bookings = run_query('bookings_with_subscription')
+    free_plans = ['flex', 'flex_legacy', '2014-11-free', 'basic', 'custom']
+    bookings = bookings[~bookings.subscription_type.isin(free_plans)]
+    bookings.created = bookings.created.apply(lambda d: d.date())
+    # Get the last sunday
+    today = date.today().toordinal()
+    current_date = date.fromordinal(today - (today % 7))
+    bookings = bookings[bookings.s_begin <= (current_date - timedelta(days=90))]
+    bottom20_this_week = bookings[
+        (bookings.created <= current_date) &
+        (bookings.created >= (
+            current_date - timedelta(days=30)))].facility_id.value_counts(
+                ascending=True).head(20)
+    current_date -= timedelta(days=7)
+    values_last_week = bookings[
+        (bookings.created <= current_date) &
+        (bookings.created >=
+         (current_date - timedelta(days=30)))].facility_id.value_counts(
+             ascending=True)
+    labels = ['{} ({})'.format(
+        f, bookings[bookings.facility_id == f]['subscription_type'].values[0])
+        for f in bottom20_this_week.index]
+    previous_ranks = []
+    for i, f in enumerate(bottom20_this_week.index):
+        idx = np.where(values_last_week.index == f)[0]
+        if idx:
+            previous_ranks.append(int(idx + 1))
+        else:
+            previous_ranks.append(i + 20)
+    return (labels, bottom20_this_week.values, previous_ranks)

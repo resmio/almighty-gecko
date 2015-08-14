@@ -21,7 +21,8 @@ QUERIES = {
     'bookings_with_subscription':
 
     """
-        SELECT b.created, b.facility_id, s.subscription_type
+        SELECT b.created, b.facility_id, s.begins AS s_begin,
+               s.subscription_type
         FROM bookoya_booking b
         JOIN bookoya_facility f ON f.id = b.facility_id
         INNER JOIN bookoya_monthlysubscription s ON b.facility_id = s.facility_id
