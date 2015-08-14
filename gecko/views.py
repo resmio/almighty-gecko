@@ -163,4 +163,4 @@ def least_active_paying():
             previous_ranks.append(int(idx + 1))
         else:
             previous_ranks.append(i + 20)
-    return (labels, bottom20_this_week.values, previous_ranks)
+    return (labels, bottom20_this_week.values, previous_ranks, 'ascending')
