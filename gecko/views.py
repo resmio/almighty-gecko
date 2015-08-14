@@ -13,7 +13,7 @@ geckoboard = Geckoboard(app)
 @app.route('/active_verified_facilities')
 @geckoboard.line_chart
 def active_verified_facilities():
-    df = run_query('active_verified_facilities')
+    df = run_query('bookings_and_facilities')
     bookings = df[df.created.notnull()]
     bookings.created = bookings.created.apply(lambda d: d.date())
     df.f_created = df.f_created.apply(lambda d: d.date())
@@ -40,8 +40,7 @@ def active_verified_facilities():
 @app.route('/new_lost_active_facilities')
 @geckoboard.line_chart
 def new_lost_active_facilities():
-    df = run_query('active_verified_facilities')
-    bookings = df[df.created.notnull()]
+    bookings = run_query('bookings')
     bookings.created = bookings.created.apply(lambda d: d.date())
     today = date.today().toordinal()
     # Get the last sunday
@@ -80,11 +79,10 @@ def new_lost_active_facilities():
 @app.route('/current_active_numbers')
 @geckoboard.rag
 def current_active_numbers():
-    df = run_query('active_verified_facilities')
-    bookings = df[df.created.notnull()]
+    bookings = run_query('bookings')
     bookings.created = bookings.created.apply(lambda d: d.date())
-    today = date.today().toordinal()
     # Get the last sunday
+    today = date.today().toordinal()
     current_date = date.fromordinal(today - (today % 7))
     this_month = set(bookings[
         (bookings.created <= current_date) &
@@ -110,10 +108,9 @@ def current_active_numbers():
 @app.route('/most_active_free_plan')
 @geckoboard.leaderboard
 def most_active_free_plan():
-    df = run_query('bookings_with_subscription')
+    bookings = run_query('bookings_with_subscription')
     free_plans = ['flex', 'flex_legacy', '2014-11-free']
-    bookings = df[df.subscription_type.isin(free_plans)]
-    bookings = bookings[bookings.created.notnull()]
+    bookings = bookings[bookings.subscription_type.isin(free_plans)]
     bookings.created = bookings.created.apply(lambda d: d.date())
     # Get the last sunday
     today = date.today().toordinal()
