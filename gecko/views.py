@@ -104,3 +104,29 @@ def current_active_numbers():
     return ((deactivated, "De-activated"),
             (reactivated, "Re-activated"),
             (activated, "Activated"))
+
+
+@app.route('/most_active_free_plan')
+@geckoboard.leaderboard
+def most_active_free_plan():
+    df = run_query('bookings_with_subscription')
+    free_plans = ['flex', 'flex_legacy', '2014-11-free']
+    bookings = df[df.subscription_type.isin(free_plans)]
+    bookings = bookings[bookings.created.notnull()]
+    bookings.created = bookings.created.apply(lambda d: d.date())
+    # Get the last sunday
+    today = date.today().toordinal()
+    current_date = date.fromordinal(today - (today % 7))
+    top20_this_week = bookings[
+        (bookings.created <= current_date) &
+        (bookings.created >= (
+            current_date - timedelta(days=30)))].facility_id.value_counts(
+                ascending=False).head(20)
+    current_date -= timedelta(days=7)
+    values_last_week = bookings[
+        (bookings.created <= current_date) &
+        (bookings.created >=
+         (current_date - timedelta(days=30)))].facility_id.value_counts(
+             ascending=False)
+    previous_values = [values_last_week[f] for f in top20_this_week.index]
+    return (top20_this_week.index, top20_this_week.values, previous_values)
