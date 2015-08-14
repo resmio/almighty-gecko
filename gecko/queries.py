@@ -12,7 +12,7 @@ QUERIES = {
     'bookings':
 
     """
-        SELECT b.created, b.facility_id FROM bookoya_booking b
+        SELECT b.created, b.facility_id, b.source FROM bookoya_booking b
         JOIN bookoya_facility f ON f.id = b.facility_id
         WHERE f.verified IS TRUE
 
@@ -29,6 +29,4 @@ QUERIES = {
         WHERE f.verified IS TRUE
 
     """,
-
-
 }

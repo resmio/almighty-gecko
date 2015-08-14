@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 from flask import Flask
 from flask_geckoboard import Geckoboard
@@ -164,3 +164,18 @@ def least_active_paying():
         else:
             previous_ranks.append(i + 20)
     return (labels, bottom20_this_week.values, previous_ranks, 'ascending')
+
+
+@app.route('/number_bookings')
+@geckoboard.line_chart
+def number_bookings():
+    bookings = run_query('bookings')
+    bookings = bookings.set_index('created')
+    start = bookings.index.searchsorted(datetime(2015, 1, 1))
+    bookings = bookings.ix[start:]
+    bookings_count = bookings.facility_id.resample('w', how='count')
+    bookings_count.index = map(lambda d: d.date(), bookings_count.index)
+    dates = ['{}'.format(d) for d in bookings_count.index]
+    return {'series': [{'data': bookings_count.values.tolist(),
+                        'name': 'Bookings'}],
+            'x_axis': {'labels': dates, 'type': 'datetime'}}
