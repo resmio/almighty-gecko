@@ -175,9 +175,9 @@ def number_bookings():
     bookings_count = bookings.facility_id.resample('w', how='count')
     bookings_count.index = map(lambda d: d.date(), bookings_count.index)
     dates = ['{}'.format(d) for d in bookings_count.index]
-    return {'series': [{'data': bookings_count.values.tolist(),
+    return {'series': [{'data': bookings_count.values.tolist()[:-1],
                         'name': 'Bookings'}],
-            'x_axis': {'labels': dates, 'type': 'datetime'}}
+            'x_axis': {'labels': dates[:-1], 'type': 'datetime'}}
 
 
 @app.route('/number_covers')
@@ -189,6 +189,6 @@ def number_covers():
     bookings_count = bookings.num.resample('w', how='sum')
     bookings_count.index = map(lambda d: d.date(), bookings_count.index)
     dates = ['{}'.format(d) for d in bookings_count.index]
-    return {'series': [{'data': bookings_count.values.tolist(),
+    return {'series': [{'data': bookings_count.values.tolist()[:-1],
                         'name': 'Covers'}],
-            'x_axis': {'labels': dates, 'type': 'datetime'}}
+            'x_axis': {'labels': dates[:-1], 'type': 'datetime'}}
