@@ -1,1 +1,1 @@
-web: gunicorn gecko.views:app --workers $WEB_CONCURRENCY --preload --log-file -
+web: gunicorn gecko.views:app --preload --log-file -
