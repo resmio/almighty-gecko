@@ -1,16 +1,26 @@
 from datetime import date, timedelta
+import os
 
 from flask import Flask
+from flask.ext.cache import Cache
 from flask_geckoboard import Geckoboard
 import numpy as np
 
 from query_db import run_query
 
 app = Flask(__name__)
+
+if 'CONFIG_SETTINGS' in os.environ:
+    app.config.from_object(os.environ['CONFIG_SETTINGS'])
+else:
+    app.config.from_object('config.DevelopmentConfig')
+
+cache = Cache(app)
 geckoboard = Geckoboard(app)
 
 
 @app.route('/active_verified_facilities')
+@cache.cached(timeout=300)
 @geckoboard.line_chart
 def active_verified_facilities():
     df = run_query('bookings_and_facilities')
@@ -38,6 +48,7 @@ def active_verified_facilities():
 
 
 @app.route('/new_lost_active_facilities')
+@cache.cached(timeout=300)
 @geckoboard.line_chart
 def new_lost_active_facilities():
     bookings = run_query('bookings')
@@ -77,6 +88,7 @@ def new_lost_active_facilities():
 
 
 @app.route('/current_active_numbers')
+@cache.cached(timeout=300)
 @geckoboard.rag
 def current_active_numbers():
     bookings = run_query('bookings')
@@ -106,6 +118,7 @@ def current_active_numbers():
 
 
 @app.route('/most_active_free_plan')
+@cache.cached(timeout=300)
 @geckoboard.leaderboard
 def most_active_free_plan():
     bookings = run_query('bookings_with_subscription')
@@ -132,6 +145,7 @@ def most_active_free_plan():
 
 
 @app.route('/least_active_paying')
+@cache.cached(timeout=300)
 @geckoboard.leaderboard
 def least_active_paying():
     bookings = run_query('bookings_with_subscription')
@@ -167,6 +181,7 @@ def least_active_paying():
 
 
 @app.route('/number_bookings')
+@cache.cached(timeout=300)
 @geckoboard.line_chart
 def number_bookings():
     bookings = run_query('bookings')
@@ -181,6 +196,7 @@ def number_bookings():
 
 
 @app.route('/number_covers')
+@cache.cached(timeout=300)
 @geckoboard.line_chart
 def number_covers():
     bookings = run_query('bookings')
