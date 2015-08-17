@@ -1,4 +1,3 @@
-import logging
 import os
 
 try:
@@ -8,9 +7,21 @@ except ImportError:
 
 
 def get_config(key):
-     return (os.environ.get(key) if os.environ.get(key) is not None else
-             getattr(local_settings, key, globals().get(key)))
+    return (os.environ.get(key) if os.environ.get(key) is not None else
+            getattr(local_settings, key, globals().get(key)))
 
 
-GECKOBOARD_API_KEY = get_config('GECKOBOARD_API_KEY')
+class Config(object):
+    DEBUG = False
 
+
+class ProductionConfig(Config):
+    CACHE_TYPE = 'saslmemcached'
+    CACHE_MEMCACHED_SERVERS = [os.environ.get('MEMCACHIER_SERVERS')]
+    CACHE_MEMCACHED_USERNAME = os.environ.get('MEMCACHIER_USERNAME')
+    CACHE_MEMCACHED_PASSWORD = os.environ.get('MEMCACHIER_PASSWORD')
+
+
+class DevelopmentConfig(Config):
+    CACHE_TYPE = 'memcached'
+    DEBUG = True
