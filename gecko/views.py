@@ -241,3 +241,16 @@ def number_pages_bookings():
     return {'series': [{'data': bookings_count.values.tolist()[:-1],
                         'name': 'Bookings'}],
             'x_axis': {'labels': dates[:-1], 'type': 'datetime'}}
+
+
+@app.route('/top_pages_facilities')
+@cache.cached(timeout=300)
+@geckoboard.leaderboard
+def top_pages_facilities():
+    """ Leaderboard of facilities with bookings through landingpages.  """
+    bookings = run_query('bookings')
+    bookings = bookings[bookings.source == 'pages.resmio.com']
+    bookings = bookings.set_index('created')
+    bookings = bookings.loc['20150101':]
+    bookings_count = bookings.facility_id.value_counts()
+    return (bookings_count.index, bookings_count.values)
