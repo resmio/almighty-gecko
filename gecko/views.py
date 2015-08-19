@@ -23,6 +23,7 @@ geckoboard = Geckoboard(app)
 @cache.cached(timeout=300)
 @geckoboard.line_chart
 def active_verified_facilities():
+    """ Line chart with the weekly number of verified and active facilities. """
     df = run_query('bookings_and_facilities')
     bookings = df[df.created.notnull()]
     bookings.created = bookings.created.apply(lambda d: d.date())
@@ -51,6 +52,9 @@ def active_verified_facilities():
 @cache.cached(timeout=300)
 @geckoboard.line_chart
 def new_lost_active_facilities():
+    """ Weekly number of activated, de-activated, and re-activated facilities.
+
+    """
     bookings = run_query('bookings')
     bookings.created = bookings.created.apply(lambda d: d.date())
     today = date.today().toordinal()
@@ -91,6 +95,9 @@ def new_lost_active_facilities():
 @cache.cached(timeout=300)
 @geckoboard.rag
 def current_active_numbers():
+    """ Current number of actived, de-activated, and re-activated facilities.
+
+    """
     bookings = run_query('bookings')
     bookings.created = bookings.created.apply(lambda d: d.date())
     # Get the last sunday
@@ -121,6 +128,10 @@ def current_active_numbers():
 @cache.cached(timeout=300)
 @geckoboard.leaderboard
 def most_active_free_plan():
+    """ Leaderboard with the most active facilities (in the last month) on a
+        free plan.
+
+    """
     bookings = run_query('bookings_with_subscription')
     free_plans = ['flex', 'flex_legacy', '2014-11-free']
     bookings = bookings[bookings.subscription_type.isin(free_plans)]
@@ -148,6 +159,7 @@ def most_active_free_plan():
 @cache.cached(timeout=300)
 @geckoboard.leaderboard
 def least_active_paying():
+    """ Leaderboard with the least active facilities on a payed plan. """
     bookings = run_query('bookings_with_subscription')
     free_plans = ['flex', 'flex_legacy', '2014-11-free', 'basic', 'custom']
     bookings = bookings[~bookings.subscription_type.isin(free_plans)]
@@ -184,6 +196,7 @@ def least_active_paying():
 @cache.cached(timeout=300)
 @geckoboard.line_chart
 def number_bookings():
+    """ Weekly number of bookings. """
     bookings = run_query('bookings')
     bookings = bookings[~bookings.source == '']
     bookings = bookings.set_index('created')
@@ -200,6 +213,7 @@ def number_bookings():
 @cache.cached(timeout=300)
 @geckoboard.line_chart
 def number_covers():
+    """ Weekly number of covers. """
     bookings = run_query('bookings')
     bookings = bookings[~bookings.source == '']
     bookings = bookings.set_index('created')
