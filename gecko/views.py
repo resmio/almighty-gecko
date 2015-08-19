@@ -198,7 +198,7 @@ def least_active_paying():
 def number_bookings():
     """ Weekly number of bookings. """
     bookings = run_query('bookings')
-    bookings = bookings[~bookings.source == '']
+    bookings = bookings[bookings.source != '']
     bookings = bookings.set_index('created')
     bookings = bookings.loc['20150101':]
     bookings_count = bookings.facility_id.resample('w', how='count')
@@ -215,7 +215,7 @@ def number_bookings():
 def number_covers():
     """ Weekly number of covers. """
     bookings = run_query('bookings')
-    bookings = bookings[~bookings.source == '']
+    bookings = bookings[bookings.source != '']
     bookings = bookings.set_index('created')
     bookings = bookings.loc['20150101':]
     bookings_count = bookings.num.resample('w', how='sum')
