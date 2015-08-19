@@ -224,3 +224,20 @@ def number_covers():
     return {'series': [{'data': bookings_count.values.tolist()[:-1],
                         'name': 'Covers'}],
             'x_axis': {'labels': dates[:-1], 'type': 'datetime'}}
+
+
+@app.route('/number_landingpage_bookings')
+@cache.cached(timeout=300)
+@geckoboard.line_chart
+def number_pages_bookings():
+    """ Weekly number of bookings through the landingpages. """
+    bookings = run_query('bookings')
+    bookings = bookings[bookings.source == 'pages.resmio.com']
+    bookings = bookings.set_index('created')
+    bookings = bookings.loc['20150101':]
+    bookings_count = bookings.num.resample('w', how='sum')
+    bookings_count.index = map(lambda d: d.date(), bookings_count.index)
+    dates = ['{}'.format(d) for d in bookings_count.index]
+    return {'series': [{'data': bookings_count.values.tolist()[:-1],
+                        'name': 'Covers'}],
+            'x_axis': {'labels': dates[:-1], 'type': 'datetime'}}
