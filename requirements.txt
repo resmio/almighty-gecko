@@ -1,6 +1,7 @@
 Flask==0.10.1
 Flask-Cache==0.13.1
 -e git+https://github.com/neocortex/flask-geckoboard.git@79078e9c77ebb41520a9a5b11186606984b3db31#egg=flask-geckoboard
+flatdict==1.2.0
 gunicorn==19.3.0
 pandas==0.16.2
 psycopg2==2.6.1
