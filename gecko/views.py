@@ -235,7 +235,7 @@ def number_pages_bookings():
     bookings = bookings[bookings.source == 'pages.resmio.com']
     bookings = bookings.set_index('created')
     bookings = bookings.loc['20150101':]
-    bookings_count = bookings.num.resample('w', how='sum')
+    bookings_count = bookings.num.resample('w', how='count')
     bookings_count.index = map(lambda d: d.date(), bookings_count.index)
     dates = ['{}'.format(d) for d in bookings_count.index]
     return {'series': [{'data': bookings_count.values.tolist()[:-1],
