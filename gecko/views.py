@@ -226,7 +226,7 @@ def number_covers():
             'x_axis': {'labels': dates[:-1], 'type': 'datetime'}}
 
 
-@app.route('/number_landingpage_bookings')
+@app.route('/number_pages_bookings')
 @cache.cached(timeout=300)
 @geckoboard.line_chart
 def number_pages_bookings():
@@ -239,5 +239,5 @@ def number_pages_bookings():
     bookings_count.index = map(lambda d: d.date(), bookings_count.index)
     dates = ['{}'.format(d) for d in bookings_count.index]
     return {'series': [{'data': bookings_count.values.tolist()[:-1],
-                        'name': 'Covers'}],
+                        'name': 'Bookings'}],
             'x_axis': {'labels': dates[:-1], 'type': 'datetime'}}
