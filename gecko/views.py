@@ -185,6 +185,7 @@ def least_active_paying():
 @geckoboard.line_chart
 def number_bookings():
     bookings = run_query('bookings')
+    bookings = bookings[~bookings.source == '']
     bookings = bookings.set_index('created')
     bookings = bookings.loc['20150101':]
     bookings_count = bookings.facility_id.resample('w', how='count')
@@ -200,6 +201,7 @@ def number_bookings():
 @geckoboard.line_chart
 def number_covers():
     bookings = run_query('bookings')
+    bookings = bookings[~bookings.source == '']
     bookings = bookings.set_index('created')
     bookings = bookings.loc['20150101':]
     bookings_count = bookings.num.resample('w', how='sum')
