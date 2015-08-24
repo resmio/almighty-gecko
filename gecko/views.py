@@ -6,6 +6,7 @@ from flask.ext.cache import Cache
 from flask_geckoboard import Geckoboard
 import numpy as np
 
+from ga import get_ga_reader
 from query_db import run_query
 
 app = Flask(__name__)
@@ -254,3 +255,24 @@ def top_pages_facilities():
     bookings = bookings.loc['20150101':]
     bookings_count = bookings.facility_id.value_counts()
     return (bookings_count.index, bookings_count.values)
+
+
+@app.route('/most_visited_app_urls')
+@cache.cached(timeout=300)
+@geckoboard.leaderboard
+def most_visited_app_urls():
+    reader = get_ga_reader()
+    metrics = ['pageviews', 'avgTimeOnSite']
+    dimensions = ['pagePathLevel2', 'pagePathLevel3']
+    start_date = '2015-01-01'
+    end_date = date.today()
+    df = reader.get_data(metrics=metrics, dimensions=dimensions,
+                         start_date=start_date,
+                         end_date=end_date,
+                         index_col=0)
+    sorted_df = df.sort('pageviews', ascending=False)
+    paths = map(lambda p1, p2: p1[:-1] + p2, sorted_df.index,
+                sorted_df.pagePathLevel3)
+    labels = map(lambda p, v: '{} (views: {})'.format(
+        p.encode('ascii', 'ignore'), v), paths, sorted_df.pageviews)
+    return (labels[:11], sorted_df.avgTimeOnSite.values[:11])
