@@ -275,4 +275,4 @@ def most_visited_app_urls():
                 sorted_df.pagePathLevel3)
     labels = map(lambda p, v: '{} (views: {})'.format(
         p.encode('ascii', 'ignore'), v), paths, sorted_df.pageviews)
-    return (labels[:11], sorted_df.avgTimeOnSite.values[:11])
+    return (labels[:10], sorted_df.avgTimeOnSite.values[:10])
