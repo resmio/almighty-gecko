@@ -13,6 +13,9 @@ def get_config(key):
 
 class Config(object):
     DEBUG = False
+    GA_CLIENT_EMAIL = get_config('GA_CLIENT_EMAIL')
+    GA_PRIVATE_KEY = get_config('GA_PRIVATE_KEY')
+    GA_SCOPE = get_config('GA_SCOPE')
 
 
 class ProductionConfig(Config):
