@@ -247,7 +247,7 @@ def number_pages_bookings():
 @cache.cached(timeout=300)
 @geckoboard.leaderboard
 def top_pages_facilities():
-    """ Leaderboard of facilities with bookings through landingpages.  """
+    """ Leaderboard of facilities with bookings through landingpages. """
     bookings = run_query('bookings')
     bookings = bookings[bookings.source == 'pages.resmio.com']
     bookings = bookings.set_index('created')
