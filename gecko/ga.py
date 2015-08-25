@@ -30,6 +30,6 @@ class ResmioGAnalytics(GAnalytics):
 
 
 def get_ga_reader():
-    return ResmioGAnalytics(app.config['GA_CLIENT_EMAIL'],
-                            app.config['GA_PRIVATE_KEY'],
-                            app.config['GA_SCOPE'])
+    return ResmioGAnalytics(app.config.get('GA_CLIENT_EMAIL'),
+                            app.config.get('GA_PRIVATE_KEY'),
+                            app.config.get('GA_SCOPE'))
