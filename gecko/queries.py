@@ -33,7 +33,7 @@ QUERIES = {
     'facilities_with_subscription':
 
     """
-        SELECT f.id, s.subscription_type, s.begins, s.ends
+        SELECT f.id, f.created, s.subscription_type, s.begins, s.ends
         FROM bookoya_facility f
         JOIN bookoya_monthlysubscription s ON f.id = s.facility_id
         WHERE f.verified IS TRUE

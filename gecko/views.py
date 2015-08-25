@@ -313,9 +313,12 @@ def least_widget_views():
     facilities = run_query('facilities_with_subscription')
     companies = intercom_companies()
     free_plans = ['flex', 'flex_legacy', '2014-11-free', 'basic', 'custom']
+    facilities.created = facilities.created.apply(lambda d: d.date())
+    last_month = date.today() - timedelta(days=30)
     paying_facilities = facilities[
         ~facilities.subscription_type.isin(free_plans)
-        & facilities.ends.isnull()].id.tolist()
+        & facilities.ends.isnull()
+        & (facilities.created <= last_month)].id.tolist()
     paying_companies = companies[companies.company_id.isin(paying_facilities)]
     sorted_df = paying_companies.sort('number_of_unique_pageviews_last_month')
     labels = ['{} ({})'.format(
