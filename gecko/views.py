@@ -261,6 +261,9 @@ def top_pages_facilities():
 @cache.cached(timeout=300)
 @geckoboard.leaderboard
 def most_visited_app_urls():
+    """ List of most visited app views and the average time spent on each.
+
+    """
     reader = get_ga_reader()
     account_id = app.config.get('GA_ACCOUNT_ID')
     property_id = app.config.get('GA_APP_PROPERY_ID')
@@ -284,6 +287,7 @@ def most_visited_app_urls():
 @cache.cached(timeout=300)
 @geckoboard.line_chart
 def unique_widget_views():
+    """ Number of unique widget views over time. """
     reader = get_ga_reader()
     account_id = app.config.get('GA_ACCOUNT_ID')
     property_id = app.config.get('GA_WIDGET_PROPERTY_ID')
