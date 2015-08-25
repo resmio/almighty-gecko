@@ -278,3 +278,25 @@ def most_visited_app_urls():
     labels = map(lambda p, v: '{} (views: {})'.format(
         p.encode('ascii', 'ignore'), v), paths, sorted_df.pageviews)
     return (labels[:10], sorted_df.avgTimeOnSite.values[:10])
+
+
+@app.route('/unique_widget_views')
+@cache.cached(timeout=300)
+@geckoboard.line_chart
+def unique_widget_views():
+    reader = get_ga_reader()
+    account_id = app.config.get('GA_ACCOUNT_ID')
+    property_id = app.config.get('GA_WIDGET_PROPERTY_ID')
+    metrics = ['uniquePageviews']
+    dimensions = ['date']
+    start_date = '2015-01-01'
+    end_date = date.today()
+    df = reader.get_data(metrics=metrics, dimensions=dimensions,
+                         start_date=start_date, end_date=end_date,
+                         account_id=account_id, property_id=property_id,
+                         index_col=0)
+    widget_counts = df.uniquePageviews.resample('w', how='sum')
+    dates = ['{}'.format(d.date()) for d in widget_counts.index]
+    return {'series': [{'data': widget_counts.values.tolist()[:-1],
+                        'name': 'Widget Views'}],
+            'x_axis': {'labels': dates[:-1], 'type': 'datetime'}}
