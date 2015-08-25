@@ -25,7 +25,8 @@ QUERIES = {
                s.subscription_type
         FROM bookoya_booking b
         JOIN bookoya_facility f ON f.id = b.facility_id
-        INNER JOIN bookoya_monthlysubscription s ON b.facility_id = s.facility_id
+        INNER JOIN bookoya_monthlysubscription s
+        ON b.facility_id = s.facility_id
         WHERE f.verified IS TRUE
 
     """,
@@ -39,6 +40,4 @@ QUERIES = {
         WHERE f.verified IS TRUE
 
     """,
-
-
 }

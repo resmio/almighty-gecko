@@ -321,10 +321,11 @@ def least_widget_views():
         & (facilities.created <= last_month)].id.tolist()
     paying_companies = companies[companies.company_id.isin(paying_facilities)]
     sorted_df = paying_companies.sort('number_of_unique_pageviews_last_month')
-    labels = ['{} ({})'.format(
-        f, sorted_df[sorted_df.company_id == f]['subscription_type'].values[0])
+    labels = ['{} ({})'.format(f, facilities[
+        facilities.id == f]['subscription_type'].values[-1])
         for f in sorted_df.company_id]
     return (labels[:20],
-            sorted_df.number_of_unique_pageviews_last_month[:20].values.astype(int),
+            sorted_df.number_of_unique_pageviews_last_month[:20]
+            .values.astype(int),
             np.arange(0, 20) + 1,
             'ascending')
