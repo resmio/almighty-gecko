@@ -7,7 +7,7 @@ from flask_geckoboard import Geckoboard
 import numpy as np
 
 from ga import get_ga_reader
-from query_db import run_query
+from query_db import intercom_companies, run_query
 
 app = Flask(__name__)
 
@@ -304,3 +304,24 @@ def unique_widget_views():
     return {'series': [{'data': widget_counts.values.tolist()[:-1],
                         'name': 'Widget Views'}],
             'x_axis': {'labels': dates[:-1], 'type': 'datetime'}}
+
+
+@app.route('/least_widget_views')
+@cache.cached(timeout=300)
+@geckoboard.leaderboard
+def least_widget_views():
+    facilities = run_query('facilities_with_subscription')
+    companies = intercom_companies()
+    free_plans = ['flex', 'flex_legacy', '2014-11-free', 'basic', 'custom']
+    paying_facilities = facilities[
+        ~facilities.subscription_type.isin(free_plans)
+        & facilities.ends.isnull()].id.tolist()
+    paying_companies = companies[companies.company_id.isin(paying_facilities)]
+    sorted_df = paying_companies.sort('number_of_unique_pageviews_last_month')
+    labels = ['{} ({})'.format(
+        f, sorted_df[sorted_df.company_id == f]['subscription_type'].values[0])
+        for f in sorted_df.company_id]
+    return (labels[:20],
+            sorted_df.number_of_unique_pageviews_last_month[:20].values.astype(int),
+            np.arange(0, 20) + 1,
+            'ascending')
