@@ -262,13 +262,15 @@ def top_pages_facilities():
 @geckoboard.leaderboard
 def most_visited_app_urls():
     reader = get_ga_reader()
+    account_id = app.config.get('GA_ACCOUNT_ID')
+    property_id = app.config.get('GA_APP_PROPERY_ID')
     metrics = ['pageviews', 'avgTimeOnSite']
     dimensions = ['pagePathLevel2', 'pagePathLevel3']
     start_date = '2015-01-01'
     end_date = date.today()
     df = reader.get_data(metrics=metrics, dimensions=dimensions,
-                         start_date=start_date,
-                         end_date=end_date,
+                         start_date=start_date, end_date=end_date,
+                         account_id=account_id, property_id=property_id,
                          index_col=0)
     sorted_df = df.sort('pageviews', ascending=False)
     paths = map(lambda p1, p2: p1[:-1] + p2, sorted_df.index,
