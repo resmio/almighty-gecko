@@ -44,7 +44,7 @@ def intercom_companies():
             kn = k.lower().split(':')[-1].replace(' ', '_')
             dic[kn] = v
         companies.append(dic)
-    companies = pd.DataFram(companies)
+    companies = pd.DataFrame(companies)
     companies = companies.T.drop(
         ['0', '1', 'id', 'widget_integrated', 'app_id',
          'automatic_confirm_bookings', 'minimum_book_in_advance_hours',
@@ -56,7 +56,5 @@ def intercom_companies():
     companies.remote_created_at = companies.remote_created_at.apply(
         lambda x: date.fromtimestamp(x))
     companies.updated_at = companies.updated_at.apply(
-        lambda x: date.fromtimestamp(x))
-    companies.last_seen_on_ipad = companies.last_seen_on_ipad.apply(
         lambda x: date.fromtimestamp(x))
     return companies
