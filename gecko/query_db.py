@@ -8,16 +8,6 @@ import urlparse
 from config import get_config
 from queries import QUERIES
 
-urlparse.uses_netloc.append('postgres')
-url = urlparse.urlparse(get_config('RESMIO_DB_URL'))
-
-conn = psycopg2.connect(
-    database=url.path[1:],
-    user=url.username,
-    password=url.password,
-    host=url.hostname,
-    port=url.port)
-
 
 def run_query(query_key):
     """ Run a query on the resmio database and return the result as
@@ -25,7 +15,20 @@ def run_query(query_key):
         ``queries.py``.
 
     """
-    return pd.read_sql_query(QUERIES[query_key], conn)
+    urlparse.uses_netloc.append('postgres')
+    url = urlparse.urlparse(get_config('RESMIO_DB_URL'))
+    # Connect to database
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port)
+    # Run query
+    df = pd.read_sql_query(QUERIES[query_key], conn)
+    # Close connection
+    conn.close()
+    return df
 
 
 def intercom_companies():
