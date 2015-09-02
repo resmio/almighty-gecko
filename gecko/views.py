@@ -329,3 +329,45 @@ def least_widget_views():
             .values.astype(int),
             np.arange(0, 20) + 1,
             'ascending')
+
+
+@app.route('/paying_least_bookings')
+@cache.cached(timeout=300)
+@geckoboard.leaderboard
+def paying_least_bookings():
+    """ Leaderboard with the least active facilities on a payed plan. """
+    bookings = run_query('bookings')
+    facilities = run_query('facilities_with_subscription')
+    free_plans = ['flex', 'flex_legacy', '2014-11-free', 'basic', 'custom']
+
+    bookings.created = bookings.created.apply(lambda d: d.date())
+
+    # Get the last sunday
+    today = date.today().toordinal()
+    current_date = date.fromordinal(today - (today % 7))
+
+    paying_facilities = facilities[
+        ~facilities.subscription_type.isin(free_plans)]
+    paying_facilities = paying_facilities[
+        paying_facilities.begins <= (current_date - timedelta(days=60))]
+
+    bookings_last_month = bookings[
+        bookings.created >= current_date - timedelta(days=30)]
+    b_counts = bookings_last_month.facility_id.value_counts()
+
+    labels = []
+    counts = []
+    for f_id in paying_facilities.id:
+        labels.append(f_id)
+        if f_id in b_counts.index:
+            counts.append(b_counts[f_id])
+        else:
+            counts.append(0)
+    idx = np.argsort(counts)
+    counts = np.asarray(counts)[idx][:20]
+    labels = np.asarray(labels)[idx][:20]
+
+    labels = ['{} ({})'.format(
+        f, facilities[facilities.id == f]['subscription_type'].values[0])
+        for f in labels]
+    return (labels, counts)
