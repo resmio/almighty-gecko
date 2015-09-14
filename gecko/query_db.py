@@ -39,7 +39,8 @@ def intercom_companies():
     Intercom.app_id = get_config('INTERCOM_APP_ID')
     Intercom.app_api_key = get_config('INTERCOM_API_KEY')
     company_list = [FlatDict(c.to_dict) for c in Company.all()
-                    if c.custom_attributes['Verified']]
+                    if 'Verified' in c.custom_attributes and
+                    c.custom_attributes['Verified']]
     companies = []
     for c in company_list:
         dic = {}
