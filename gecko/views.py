@@ -144,7 +144,7 @@ def most_active_free_plan():
         (bookings.created <= current_date) &
         (bookings.created >= (
             current_date - timedelta(days=30)))].facility_id.value_counts(
-                ascending=False).head(20)
+                ascending=False).head(22)
     current_date -= timedelta(days=7)
     values_last_week = bookings[
         (bookings.created <= current_date) &
@@ -173,7 +173,7 @@ def least_active_paying():
         (bookings.created <= current_date) &
         (bookings.created >= (
             current_date - timedelta(days=30)))].facility_id.value_counts(
-                ascending=True).head(20)
+                ascending=True).head(22)
     current_date -= timedelta(days=7)
     values_last_week = bookings[
         (bookings.created <= current_date) &
@@ -189,7 +189,7 @@ def least_active_paying():
         if idx:
             previous_ranks.append(int(idx + 1))
         else:
-            previous_ranks.append(i + 20)
+            previous_ranks.append(i + 22)
     return (labels, bottom20_this_week.values, previous_ranks, 'ascending')
 
 
@@ -324,10 +324,10 @@ def least_widget_views():
     labels = ['{} ({})'.format(f, facilities[
         facilities.id == f]['subscription_type'].values[-1])
         for f in sorted_df.company_id]
-    return (labels[:20],
-            sorted_df.number_of_unique_pageviews_last_month[:20]
+    return (labels[:22],
+            sorted_df.number_of_unique_pageviews_last_month[:22]
             .values.astype(int),
-            np.arange(0, 20) + 1,
+            np.arange(0, 22) + 1,
             'ascending')
 
 
@@ -364,8 +364,8 @@ def paying_least_bookings():
         else:
             counts.append(0)
     idx = np.argsort(counts)
-    counts = np.asarray(counts)[idx][:20]
-    labels = np.asarray(labels)[idx][:20]
+    counts = np.asarray(counts)[idx][:22]
+    labels = np.asarray(labels)[idx][:22]
 
     labels = ['{} ({})'.format(
         f, facilities[facilities.id == f]['subscription_type'].values[0])
