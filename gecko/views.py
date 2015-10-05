@@ -229,7 +229,7 @@ def number_covers():
 
 @app.route('/number_pages_bookings')
 @cache.cached(timeout=300)
-@geckoboard.bar
+@geckoboard.line_chart
 def number_pages_bookings():
     """ Weekly number of bookings through the landingpages. """
     bookings = run_query('bookings')
