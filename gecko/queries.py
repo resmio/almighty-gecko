@@ -26,7 +26,7 @@ QUERIES = {
         FROM bookoya_booking b
         JOIN bookoya_facility f ON f.id = b.facility_id
         INNER JOIN bookoya_monthlysubscription s
-        ON b.facility_id = s.facility_id
+        ON f.active_plan_id = s.id
         WHERE f.verified IS TRUE
 
     """,
