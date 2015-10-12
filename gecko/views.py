@@ -181,7 +181,7 @@ def least_active_paying():
          (current_date - timedelta(days=30)))].facility_id.value_counts(
              ascending=True)
     labels = ['{} ({})'.format(
-        f, bookings[bookings.facility_id == f]['subscription_type'].values[0])
+        f, bookings[bookings.facility_id == f]['subscription_type'].values[-1])
         for f in bottom20_this_week.index]
     previous_ranks = []
     for i, f in enumerate(bottom20_this_week.index):
@@ -229,7 +229,7 @@ def number_covers():
 
 @app.route('/number_pages_bookings')
 @cache.cached(timeout=300)
-@geckoboard.bar
+@geckoboard.line_chart
 def number_pages_bookings():
     """ Weekly number of bookings through the landingpages. """
     bookings = run_query('bookings')
