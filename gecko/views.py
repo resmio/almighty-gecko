@@ -5,6 +5,7 @@ from flask import Flask
 from flask.ext.cache import Cache
 from flask_geckoboard import Geckoboard
 import numpy as np
+import pandas as pd
 
 from ga import get_ga_reader
 from query_db import intercom_companies, run_query
@@ -162,35 +163,43 @@ def most_active_free_plan():
 def least_active_paying():
     """ Leaderboard with the least active facilities on a payed plan. """
     bookings = run_query('bookings_with_subscription')
+    facilities = run_query('facilities_with_subscription')
     free_plans = ['flex', 'flex_legacy', '2014-11-free', 'basic', 'custom']
-    bookings = bookings[~bookings.subscription_type.isin(free_plans)]
-    bookings.created = bookings.created.apply(lambda d: d.date())
+
     # Get the last sunday
     today = date.today().toordinal()
     current_date = date.fromordinal(today - (today % 7))
+
+    # Get all paying facilities with plans created at least 3 months ago
+    facilities = facilities[~facilities.subscription_type.isin(free_plans)]
+    facilities = facilities[
+        facilities.begins <= (current_date - timedelta(days=90))]
+    facilities = facilities[
+        (facilities.ends >= current_date) | facilities.ends.isnull()]
+
+    # Get all bookings from paying facilities created at least 3 months ago
+    bookings = bookings[~bookings.subscription_type.isin(free_plans)]
     bookings = bookings[bookings.s_begin <= (current_date - timedelta(days=90))]
-    bottom20_this_week = bookings[
+    bookings.created = bookings.created.apply(lambda d: d.date())
+
+    least_bookings = bookings[
         (bookings.created <= current_date) &
         (bookings.created >= (
             current_date - timedelta(days=30)))].facility_id.value_counts(
-                ascending=True).head(22)
-    current_date -= timedelta(days=7)
-    values_last_week = bookings[
-        (bookings.created <= current_date) &
-        (bookings.created >=
-         (current_date - timedelta(days=30)))].facility_id.value_counts(
-             ascending=True)
+                ascending=True)
+
+    # Get facilities without bookings (not in bottom_this_week)
+    no_bookings = set(facilities.id.values).difference(
+        set(least_bookings.index))
+
+    # Bottom 22 facilities
+    bottom = pd.Series(0, index=no_bookings).append(least_bookings).head(22)
+
     labels = ['{} ({})'.format(
-        f, bookings[bookings.facility_id == f]['subscription_type'].values[-1])
-        for f in bottom20_this_week.index]
-    previous_ranks = []
-    for i, f in enumerate(bottom20_this_week.index):
-        idx = np.where(values_last_week.index == f)[0]
-        if idx:
-            previous_ranks.append(int(idx + 1))
-        else:
-            previous_ranks.append(i + 22)
-    return (labels, bottom20_this_week.values, previous_ranks, 'ascending')
+        f, facilities[facilities.id == f]['subscription_type'].values[-1])
+        for f in bottom.index]
+
+    return (labels, bottom.values, np.arange(0, 22) + 1, 'ascending')
 
 
 @app.route('/number_bookings')
@@ -368,6 +377,6 @@ def paying_least_bookings():
     labels = np.asarray(labels)[idx][:22]
 
     labels = ['{} ({})'.format(
-        f, facilities[facilities.id == f]['subscription_type'].values[0])
+        f, facilities[facilities.id == f]['subscription_type'].values[-1])
         for f in labels]
     return (labels, counts)
