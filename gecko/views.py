@@ -260,8 +260,9 @@ def top_pages_facilities():
     """ Leaderboard of facilities with bookings through landingpages. """
     bookings = run_query('bookings')
     bookings = bookings[bookings.source == 'pages.resmio.com']
-    bookings = bookings.set_index('created')
-    bookings = bookings.loc['20150101':]
+    bookings.created = bookings.created.apply(lambda x: x.date())
+    bookings = bookings[bookings.created >=
+                        (date.today() - timedelta(days=30))]
     bookings_count = bookings.facility_id.value_counts()
     return (bookings_count.index, bookings_count.values)
 
