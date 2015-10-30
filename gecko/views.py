@@ -174,8 +174,7 @@ def least_active_paying():
     facilities = facilities[~facilities.subscription_type.isin(free_plans)]
     facilities = facilities[
         facilities.begins <= (current_date - timedelta(days=90))]
-    facilities = facilities[
-        (facilities.ends >= current_date) | facilities.ends.isnull()]
+    facilities = facilities[facilities.ends.isnull()]
 
     # Get all bookings from paying facilities created at least 3 months ago
     bookings = bookings[~bookings.subscription_type.isin(free_plans)]
