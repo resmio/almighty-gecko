@@ -2,7 +2,7 @@ Flask==0.10.1
 Flask-Cache==0.13.1
 -e git+https://github.com/neocortex/flask-geckoboard.git@faedc6d0a729850b9502079d021481350c1a3e4a#egg=flask-geckoboard
 flatdict==1.2.0
--e git+https://github.com/JannKleen/google-api-python-client.git@v1.4.1
+-e git+https://github.com/JannKleen/google-api-python-client.git@v1.4.1#egg=google-api-python-client
 httplib2==0.9.1
 python-intercom==2.1.1
 gunicorn==19.3.0
