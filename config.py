@@ -19,6 +19,7 @@ class Config(object):
     GA_ACCOUNT_ID = get_config('GA_ACCOUNT_ID')
     GA_APP_PROPERTY_ID = 'UA-{}-1'.format(GA_ACCOUNT_ID)
     GA_WIDGET_PROPERTY_ID = 'UA-{}-3'.format(GA_ACCOUNT_ID)
+    GH_SECRET = os.environ.get('GH_SECRET')
 
 
 class ProductionConfig(Config):

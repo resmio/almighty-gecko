@@ -11,3 +11,4 @@ psycopg2==2.6.1
 pylibmc==1.5.0
 pyOpenSSL==0.15.1
 python-gflags==2.0
+github3.py==0.9.3

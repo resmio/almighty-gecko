@@ -6,6 +6,7 @@ from flask.ext.cache import Cache
 from flask_geckoboard import Geckoboard
 import numpy as np
 import pandas as pd
+import github3
 
 from ga import get_ga_reader
 from query_db import intercom_companies, run_query
@@ -380,3 +381,47 @@ def paying_least_bookings():
         f, facilities[facilities.id == f]['subscription_type'].values[-1])
         for f in labels]
     return (labels, counts)
+
+@cache.cached(timeout=300)
+@geckoboard.rag
+def github_issues_project_x():
+    GITHUB_TOKEN = app.config.get('GH_SECRET')
+    ORG = 'resmio'
+    REPOS = ['resmio', 'resmio-tables', 'hollow-butter', 'landingpages', ]
+
+    SIZE_LUT = {
+        'x-small': 1,
+        'small': 2,
+        'medium': 5,
+        'large': 8,
+        'x-large': 13,
+    }
+
+    gh = github3.login(token=GITHUB_TOKEN)
+
+    open_points = 0
+    all_points = 0
+
+    for repo in REPOS:
+        print 'checking "{}"'.format(repo)
+        for i in gh.iter_repo_issues(ORG, repo, state='all'):
+            issue = {
+                'created_at': i.created_at,
+                'closed_at': i.closed_at,
+                'is_pull_request': (i.pull_request is not None),
+                'labels': [l.name for l in i.labels],
+                'repo': repo
+            }
+            issue_size = 0
+            if 'Project X' in issue['labels']:
+                for label in issue['labels']:
+                    if label in SIZE_LUT:
+                        issue_size += SIZE_LUT[label]
+                all_points += issue_size
+                if issue['closed_at'] is None:
+                    open_points += issue_size
+
+    return (
+        (open_points, 'Open Project X Points'),
+        (all_points-open_points, 'Closed Project X Points'),
+    )
