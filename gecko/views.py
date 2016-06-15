@@ -382,6 +382,8 @@ def paying_least_bookings():
         for f in labels]
     return (labels, counts)
 
+
+@app.route('/project_x_points')
 @cache.cached(timeout=300)
 @geckoboard.rag
 def github_issues_project_x():
