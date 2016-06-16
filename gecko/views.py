@@ -424,6 +424,6 @@ def github_issues_project_x():
                     open_points += issue_size
 
     return (
-        (open_points, 'Open Project X Points'),
-        (all_points-open_points, 'Closed Project X Points'),
+        (open_points, 'Open'),
+        (all_points-open_points, 'Closed'),
     )
