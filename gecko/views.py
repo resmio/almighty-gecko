@@ -155,7 +155,7 @@ def most_active_free_plan():
              ascending=False)
     previous_ranks = [int(np.where(values_last_week.index == f)[0] + 1)
                       for f in top20_this_week.index]
-    return (top20_this_week.index, top20_this_week.values, previous_ranks)
+    return top20_this_week.index, top20_this_week.values, previous_ranks
 
 
 @app.route('/least_active_paying')
@@ -199,7 +199,7 @@ def least_active_paying():
         f, facilities[facilities.id == f]['subscription_type'].values[-1])
         for f in bottom.index]
 
-    return (labels, bottom.values, np.arange(0, 22) + 1, 'ascending')
+    return labels, bottom.values, np.arange(0, 22) + 1, 'ascending'
 
 
 @app.route('/number_bookings')
@@ -290,7 +290,7 @@ def most_visited_app_urls():
                 sorted_df.pagePathLevel3)
     labels = map(lambda p, v: '{} (views: {})'.format(
         p.encode('ascii', 'ignore'), v), paths, sorted_df.pageviews)
-    return (labels[:10], sorted_df.avgTimeOnSite.values[:10])
+    return labels[:10], sorted_df.avgTimeOnSite.values[:10]
 
 
 @app.route('/unique_widget_views')
@@ -380,7 +380,7 @@ def paying_least_bookings():
     labels = ['{} ({})'.format(
         f, facilities[facilities.id == f]['subscription_type'].values[-1])
         for f in labels]
-    return (labels, counts)
+    return labels, counts
 
 
 @app.route('/project_x_points')
