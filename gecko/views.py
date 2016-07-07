@@ -384,7 +384,7 @@ def paying_least_bookings():
 
 
 @app.route('/project_x_points')
-@cache.cached(timeout=300)
+@cache.cached(timeout=1200)
 @geckoboard.rag
 def github_issues_project_x():
     GITHUB_TOKEN = app.config.get('GH_SECRET')
@@ -403,10 +403,12 @@ def github_issues_project_x():
 
     open_points = 0
     all_points = 0
+    in_progress_points = 0
 
     for repo in REPOS:
         print 'checking "{}"'.format(repo)
-        for i in gh.iter_repo_issues(ORG, repo, state='all'):
+        for i in gh.iter_repo_issues(ORG, repo, state='all',
+                                     labels='Project X'):
             issue = {
                 'created_at': i.created_at,
                 'closed_at': i.closed_at,
@@ -422,8 +424,11 @@ def github_issues_project_x():
                 all_points += issue_size
                 if issue['closed_at'] is None:
                     open_points += issue_size
+                elif 'in progress' in issue['labels']:
+                    in_progress_points += issue_size
 
     return (
         (open_points, 'Open'),
-        (all_points-open_points, 'Closed'),
+        (in_progress_points, 'in Progress'),
+        (all_points-open_points-in_progress_points, 'Closed'),
     )
