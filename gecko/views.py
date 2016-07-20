@@ -423,7 +423,8 @@ def github_issues_project_x():
                         issue_size += SIZE_LUT[label]
                 all_points += issue_size
                 if issue['closed_at'] is None:
-                    if 'in progress' in issue['labels']:
+                    if 'in progress' in issue['labels'] or \
+                            'ready for QA' in issue['labels']:
                         in_progress_points += issue_size
                     else:
                         open_points += issue_size
@@ -431,5 +432,5 @@ def github_issues_project_x():
     return (
         (open_points, 'Open'),
         (in_progress_points, 'in Progress'),
-        (all_points-open_points-in_progress_points, 'Closed'),
+        (all_points - open_points - in_progress_points, 'Closed'),
     )
