@@ -426,8 +426,17 @@ def github_issues_project_x():
                     if 'in progress' in issue['labels'] or \
                             'ready for QA' in issue['labels']:
                         in_progress_points += issue_size
+                        issue_status = 'in progress'
                     else:
                         open_points += issue_size
+                        issue_status = 'open'
+                else:
+                    issue_status = 'closed'
+                print '%s %s:(%s) %s points' % (
+                    str(i.id).ljust(5),
+                    i.title.ljust(100),
+                    issue_status,
+                    issue_size)
 
     return (
         (open_points, 'Open'),
